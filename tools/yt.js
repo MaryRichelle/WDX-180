@@ -4,11 +4,12 @@ const https = require('node:https'); // or 'https' for https:// URLs
 const { parseArgs } = require("node:util");
 const clipboardy = require('clipboardy');
 const readline = require('node:readline');
+const utils = require("../tools/utils/");
 
 const VERSION = "0.1.1";
 
 // https://pawelgrzybek.com/til-node-js-18-3-comes-with-command-line-arguments-parser/
-console.log("Running yt.s...");
+console.log("Running yt.js...");
 
 const { warn, ok, info, convertToKebabCase, iso8601ToSeconds, formatDate, youTubeIdRegEx } = require("./utils");
 require("dotenv").config({ path: path.resolve(__dirname, '.env') });
@@ -55,8 +56,17 @@ const IVideoInfo = {
   }
 }
 
+/**
+ * @param {Object} args
+ * @param {string} args.vid
+ */
 function getYouTubeVideoInfo({ vid, log = false }) {
 
+  if ( vid.startsWith("https://") ){
+    const vidObj = utils.ytRegex(vid); 
+    vid = vidObj.vid;
+  }
+  
   return new Promise((resolve, reject)=>{
 
     if (!youTubeIdRegEx.test(vid)) {
